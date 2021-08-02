@@ -51,14 +51,14 @@ function handleLogout() {
   });
 }
 
-function createCards(list) {
+function createCards(cards) {
   let $cardUl = $('<ul>');
 
-  let $cardLis = list.cards.map(function(card) {
+  let $cardLis = cards.map(function(card) {
     let $cardLi = $('<li>');
     let $cardButton = $('<button>')
       .text(card.text)
-      .data({ ...card, list_id: list.id })
+      .data(card)
       .on('click', openCardEditModal);
 
     $cardLi.append($cardButton);
@@ -73,13 +73,13 @@ function createCards(list) {
 
 function createLists(lists) {
   let $listContainers = lists.map(function(list) {
-    let $listContainer = $('<div class="list">').data(list);
+    let $listContainer = $('<div class="list">').data('id', list.id);
     let $header = $('<header>');
     let $headerButton = $('<button>')
       .text(list.title)
       .data(list)
       .on('click', openListEditModal);
-    let $cardUl = createCards(list);
+    let $cardUl = createCards(list.cards);
     let $addCardButton = $('<button>Add a card...</button>').on(
       'click',
       openCardCreateModal
@@ -322,7 +322,7 @@ function handleCardSave(event) {
   let { text, id } = $(event.target).data();
   let newText = $editCardInput.val().trim();
 
-  if (!newText || newText ===text) {
+  if (!newText || newText === text) {
     MicroModal.close('edit-card');
     return;
   }
@@ -333,7 +333,7 @@ function handleCardSave(event) {
     data: {
       text: newText
     }
-  }).then (function() {
+  }).then(function() {
     init();
     MicroModal.close('edit-card');
   });
@@ -438,3 +438,4 @@ $editListSaveButton.on('click', handleListEdit);
 $editListDeleteButton.on('click', handleListDelete);
 $editCardSaveButton.on('click', handleCardSave);
 $editCardDeleteButton.on('click', handleCardDelete);
+$saveListButton.on('click', handleListCreate);
